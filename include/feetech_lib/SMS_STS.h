@@ -45,6 +45,8 @@
 #define SMS_STS_GOAL_TIME_H 45
 #define SMS_STS_GOAL_SPEED_L 46
 #define SMS_STS_GOAL_SPEED_H 47
+#define SMSBL_TORQUE_LIMIT_L 48
+#define SMSBL_TORQUE_LIMIT_H 49
 #define SMS_STS_LOCK 55
 
 //-------SRAM(只读)--------
@@ -68,12 +70,16 @@ public:
 	SMS_STS();
 	SMS_STS(u8 End);
 	SMS_STS(u8 End, u8 Level);
+    virtual int WriteID(u8 ID, u8 NewID);
 	virtual int WritePosEx(u8 ID, s16 Position, u16 Speed, u8 ACC = 0);//普通写单个舵机位置指令
 	virtual int RegWritePosEx(u8 ID, s16 Position, u16 Speed, u8 ACC = 0);//异步写单个舵机位置指令(RegWriteAction生效)
 	virtual void SyncWritePosEx(u8 ID[], u8 IDN, s16 Position[], u16 Speed[], u8 ACC[]);//同步写多个舵机位置指令
+    virtual int WriteTorqueLimit(u8 ID, u16 TorqueLimit);
 	virtual int WheelMode(u8 ID);//恒速模式
 	virtual int WriteSpe(u8 ID, s16 Speed, u8 ACC = 0);//恒速模式控制指令
-	virtual int EnableTorque(u8 ID, u8 Enable);//扭力控制指令
+	virtual int PWMMode(u8 ID);//PWM模式
+	virtual int WritePWM(u8 ID, s16 pwmOut);//PWM模式控制指令
+    virtual int EnableTorque(u8 ID, u8 Enable);//扭力控制指令
 	virtual int unLockEprom(u8 ID);//eprom解锁
 	virtual int LockEprom(u8 ID);//eprom加锁
 	virtual int CalibrationOfs(u8 ID);//中位校准

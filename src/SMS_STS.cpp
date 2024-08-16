@@ -20,6 +20,11 @@ SMS_STS::SMS_STS(u8 End, u8 Level):SCSerial(End, Level)
 {
 }
 
+int SMS_STS::WriteID(u8 ID, u8 NewID)
+{
+	return writeByte(ID, SMS_STS_ID, NewID);
+}
+
 int SMS_STS::WritePosEx(u8 ID, s16 Position, u16 Speed, u8 ACC)
 {
 	if(Position<0){
@@ -33,6 +38,14 @@ int SMS_STS::WritePosEx(u8 ID, s16 Position, u16 Speed, u8 ACC)
 	Host2SCS(bBuf+5, bBuf+6, Speed);
 	
 	return genWrite(ID, SMS_STS_ACC, bBuf, 7);
+}
+
+int SMS_STS::WriteTorqueLimit(u8 ID, u16 TorqueLimit)
+
+{
+    u8 bBuf[2];
+    Host2SCS(bBuf, bBuf+1, TorqueLimit);
+    return genWrite(ID, SMSBL_TORQUE_LIMIT_L, bBuf, 2);
 }
 
 int SMS_STS::RegWritePosEx(u8 ID, s16 Position, u16 Speed, u8 ACC)
@@ -96,6 +109,24 @@ int SMS_STS::WriteSpe(u8 ID, s16 Speed, u8 ACC)
 	Host2SCS(bBuf+0, bBuf+1, Speed);
 	
 	return genWrite(ID, SMS_STS_GOAL_SPEED_L, bBuf, 2);
+}
+
+int SMS_STS::PWMMode(u8 ID)
+{
+	return writeByte(ID, SMS_STS_MODE, 2);		
+}
+
+
+int SMS_STS::WritePWM(u8 ID, s16 pwmOut)
+
+{
+	if(pwmOut<0){
+		pwmOut = -pwmOut;
+		pwmOut |= (1<<10);
+	}
+	u8 bBuf[2];
+	Host2SCS(bBuf+0, bBuf+1, pwmOut);
+	return genWrite(ID, SMS_STS_GOAL_TIME_L, bBuf, 2);
 }
 
 int SMS_STS::EnableTorque(u8 ID, u8 Enable)
